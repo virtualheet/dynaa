@@ -15,6 +15,7 @@ export default function Home() {
       <Link href="/create">Create</Link>
       <Link href="/dashboard">Dashboard</Link>
       {user?.firstName}
+      {user?.lastName}
     </div>
   );
 }
