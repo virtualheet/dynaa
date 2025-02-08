@@ -27,10 +27,11 @@ const Page = () => {
         >
          
           
-  
+          {project?.id}
             <Link 
               href={project?.githubUrl || ''} 
               target="_blank"
+
               style={{
                 padding: 'clamp(0.5rem, 1vw, 1rem) clamp(0.75rem, 1.5vw, 1.5rem)',
                 gap: 'clamp(0.375rem, 0.75vw, 0.75rem)',
