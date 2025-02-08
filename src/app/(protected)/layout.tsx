@@ -1,4 +1,3 @@
-import { SidebarProvider } from '@/components/ui/sidebar'
 import { UserButton } from '@clerk/nextjs'
 import React from 'react'
 import AppSidebar from './app-sidebar'
@@ -7,25 +6,33 @@ type Props = {
     children: React.ReactNode
 }
 
-const layout = ({ children }: Props) => {
+const Layout = ({ children }: Props) => {
     return (
-        <SidebarProvider>
-                <AppSidebar />
-            <main className='m-2 w-full'>
-                <div className="flex items-center bg-sidebar shadow gap-2 border border-sidebar-border rounded-md p-2 px-4">
-                    {/* <Sidebar /> */}
-                    <div className="ml-auto"></div>
-                    <UserButton />
+        <div className="flex min-h-screen bg-black/80">
+            {/* Sidebar */}
+            <AppSidebar />
+
+            {/* Main Content */}
+            <main className='flex-1 '>
+                {/* Header */}
+                <div className="flex items-center justify-end mb-4 bg-black border border-white/5 rounded-2xl p-3">
+                    <UserButton 
+                        appearance={{
+                            elements: {
+                                rootBox: 'hover:opacity-80 transition-opacity',
+                                avatarBox: 'w-8 h-8 rounded-xl',
+                            }
+                        }}
+                    />
                 </div>
 
-                <div className="h-4"></div>
-                <div className="border-sidebar-border bg-sidebar border shadow rounded-md overflow-y-scroll h-[calc(100vh-6rem)] p-4">
+                {/* Content Area */}
+                <div className="bg-black border border-white/5 rounded-3xl min-h-[calc(100vh-7rem)] overflow-auto scrollbar-none">
                     {children}
                 </div>
             </main>
-        </SidebarProvider>
-
+        </div>
     )
 }
 
-export default layout
+export default Layout

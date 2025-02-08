@@ -1,9 +1,11 @@
+'use client'
 import Link from "next/link";
 import { LatestPost } from "@/app/_components/post";
 import { useUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 export default function Home() {
+  const { user } = useUser();
   return (
     <div style={{
       padding: `clamp(1rem, 2vw, 2rem)`,
@@ -12,7 +14,7 @@ export default function Home() {
     }} className="flex text-red-600">
       <Link href="/create">Create</Link>
       <Link href="/dashboard">Dashboard</Link>
-      
+      {user?.firstName}
     </div>
   );
 }
