@@ -1,3 +1,5 @@
+// app/create-project/page.tsx
+
 'use client'
 import useRefetch from '@/hooks/use-refetch'
 import { api } from '@/trpc/react'
@@ -5,6 +7,7 @@ import { Github } from 'lucide-react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import ImportRepo from './ImportRepo'
 
 type FormInput = {
   repoUrl: string
@@ -13,7 +16,7 @@ type FormInput = {
 }
 
 const CreateProject = () => {
-  const { register, handleSubmit, reset } = useForm<FormInput>()
+  const { register, handleSubmit, reset, setValue, watch } = useForm<FormInput>()
   const createProject = api.project.createProject.useMutation()
   const refetch = useRefetch()
 
@@ -32,12 +35,11 @@ const CreateProject = () => {
         toast.error('Failed to create project')
       }
     })
-    return true
   }
 
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen bg-black/80 text-white p-6'>
-      <div className='w-full max-w-md bg-black border border-white/5 rounded-3xl p-8'>
+    <div className='flex flex-col bg-black/80 text-white'>
+      <div className='w-full max-w-md bg-black border border-white/5 rounded-3xl '>
         <div className='flex items-center gap-3 mb-8'>
           <div className='p-3 bg-white/5 rounded-2xl'>
             <Github className='w-6 h-6' />
@@ -46,29 +48,21 @@ const CreateProject = () => {
         </div>
         
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-          <div className='space-y-2'>
-            <label htmlFor='projectName' className='text-sm font-medium text-white/70'>
-              Project Name
-            </label>
-            <input
-              {...register('projectName', { required: true })}
-              id='projectName'
-              type='text'
-              className='w-full bg-white/5 border border-white/10 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all placeholder:text-white/30'
-              placeholder='Enter project name'
-            />
-          </div>
+       
 
           <div className='space-y-2'>
-            <label htmlFor='repoUrl' className='text-sm font-medium text-white/70'>
-              GitHub Repository URL
+            <label className='text-sm font-medium text-white/70'>
+              GitHub Repository
             </label>
+            <ImportRepo 
+              onSelectRepo={(url) => setValue('repoUrl', url)}
+              onProjectName={(name) => setValue('projectName', name)}
+              githubToken={watch('githubToken')}
+            />
             <input
+
+              type="hidden"
               {...register('repoUrl', { required: true })}
-              id='repoUrl'
-              type='url'
-              className='w-full bg-white/5 border border-white/10 text-white rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all placeholder:text-white/30'
-              placeholder='https://github.com/username/repo'
             />
           </div>
 
@@ -87,8 +81,11 @@ const CreateProject = () => {
 
           <button 
             type='submit'
+            style={{
+              padding:"clamp(0.5rem, 0.75vw, 1rem) clamp(1rem, 1vw, 2rem)"
+            }}
             disabled={createProject.isPending}
-            className='w-full bg-white/10 text-white border border-white/10 rounded-2xl py-3 font-medium hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-8'
+            className='w-fit bg-white/10 text-white border border-white/10 rounded-2xl py-3 font-medium hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-8'
           >
             {createProject.isPending ? (
               <span className='flex items-center justify-center gap-2'>

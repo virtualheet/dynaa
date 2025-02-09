@@ -12,6 +12,15 @@ export const projectRouter = createTRPCRouter({
             githubToken: z.string().optional(),
         }))
         .mutation(async ({ ctx, input }) => {
+            const user = await ctx.db.user.findUnique({
+                where: {
+                    id: ctx.user.userId!
+                }
+            })
+            if (!user) {
+                throw new Error("User not found");
+            }
+            console.log('user : ', user)
             const project = await ctx.db.project.create({
                 data: {
                     name: input.name,

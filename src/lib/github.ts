@@ -2,6 +2,7 @@ import { db } from "@/server/db";
 import { Octokit } from "octokit";
 import { aiSummarize } from "./gemini";
 import axios from "axios";
+
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
 });
