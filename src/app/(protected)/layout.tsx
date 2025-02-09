@@ -13,10 +13,11 @@ const Layout = ({ children }: Props) => {
             <AppSidebar />
 
             {/* Main Content */}
-            <main className='flex-1 '>
+            <main className='flex flex-col w-full '>
                 {/* Header */}
-                <div className="flex items-center justify-end mb-4 bg-black border border-white/5 rounded-2xl p-3">
+                <div className="flex items-center w-full justify-end mb-4 bg-black border border-white/5 rounded-2xl p-3">
                     <UserButton 
+
                         appearance={{
                             elements: {
                                 rootBox: 'hover:opacity-80 transition-opacity',

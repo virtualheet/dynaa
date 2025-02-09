@@ -1,6 +1,7 @@
 import { db } from "@/server/db";
 import { Octokit } from "octokit";
-
+import { aiSummarize } from "./gemini";
+import axios from "axios";
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
 });
@@ -50,12 +51,46 @@ export const pollCommits = async (projectId: string) => {
     }
     const commitHashes = await getCommits(githubUrl);
     const useprocessedCommits = await filterUnProcessedCommits(projectId, commitHashes);
-    return useprocessedCommits;
+
+    const summariesResponces = await Promise.allSettled (useprocessedCommits.map(async (commit) => {
+        return await summarizeCommits(githubUrl, commit.commitHash);
+    }));
+
+    const summaries = summariesResponces.map((responce) => {
+        if (responce.status === "fulfilled") {
+            return responce.value as string; 
+        }
+        return "No summary available";
+    });
+
+    const commits = await db.commit.createMany({
+
+        data: summaries.map((summary, index) => {
+        console.log('processing commit ',index, '\n');
+            return {
+                projectId : projectId,
+                commitHash: useprocessedCommits[index]!.commitHash,
+                commitMessage: useprocessedCommits[index]!.commitMessage,
+                commitAuthorName: useprocessedCommits[index]!.commitAuthorName,
+                commitAuthorAvatar: useprocessedCommits[index]!.commitAuthorAvatar,
+
+                commitDate: useprocessedCommits[index]!.commitDate,
+                summary,
+
+            }
+        }),
+    });
+    await pollCommits(projectId);
+    return commits;
 };
 
 const summarizeCommits = async (githubUrl:string, commitHash: string) => {
-
-
+    const { data } = await axios.get(`${githubUrl}/commits/${commitHash}.diff`,{
+        headers: {
+            "Accept": "application/vnd.github.v3.fiff",
+        },
+    });
+    return await aiSummarize(data) || "No summary available";
 }
 
 async function fetchProjectGithubUrl(projectId: string) {
@@ -79,5 +114,5 @@ async function filterUnProcessedCommits(projectId: string, commitHashes: Respons
 }
 
 
-await pollCommits("cm6txc83a000c2zv96ycp93wj").then(console.log);
+await pollCommits("cm6wc7o0r000011h7hiv7dipj").then(console.log);
 console.log("done");
