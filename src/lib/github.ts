@@ -35,6 +35,7 @@ export const getCommits = async (githubUrl: string): Promise<Response[]> => {
         return new Date(dateB).getTime() - new Date(dateA).getTime();
     });
 
+
     return sortedCommits.map((commit) => ({
         commitHash: commit.sha,
         commitMessage: commit.commit.message,
@@ -49,49 +50,48 @@ export const pollCommits = async (projectId: string) => {
     if (!githubUrl) {
         throw new Error("GitHub URL not found");
     }
+    
     const commitHashes = await getCommits(githubUrl);
-    const useprocessedCommits = await filterUnProcessedCommits(projectId, commitHashes);
+    const unprocessedCommits = await filterUnProcessedCommits(projectId, commitHashes);
 
-    const summariesResponces = await Promise.allSettled (useprocessedCommits.map(async (commit) => {
+    if (unprocessedCommits.length === 0) {
+        return; // Exit if no new commits to process
+    }
+
+    const summariesResponses = await Promise.allSettled(unprocessedCommits.map(async (commit) => {
         return await summarizeCommits(githubUrl, commit.commitHash);
     }));
 
-    const summaries = summariesResponces.map((responce) => {
-        if (responce.status === "fulfilled") {
-            return responce.value as string; 
+    const summaries = summariesResponses.map((response) => {
+        if (response.status === "fulfilled") {
+            return response.value as string;
         }
         return "No summary available";
     });
 
-    const commits = await db.commit.createMany({
-
-        data: summaries.map((summary, index) => {
-        console.log('processing commit ',index, '\n');
-            return {
-                projectId : projectId,
-                commitHash: useprocessedCommits[index]!.commitHash,
-                commitMessage: useprocessedCommits[index]!.commitMessage,
-                commitAuthorName: useprocessedCommits[index]!.commitAuthorName,
-                commitAuthorAvatar: useprocessedCommits[index]!.commitAuthorAvatar,
-
-                commitDate: useprocessedCommits[index]!.commitDate,
-                summary,
-
-            }
-        }),
+    return await db.commit.createMany({
+        data: summaries.map((summary, index) => ({
+            projectId,
+            commitHash: unprocessedCommits[index]!.commitHash,
+            commitMessage: unprocessedCommits[index]!.commitMessage,
+            commitAuthorName: unprocessedCommits[index]!.commitAuthorName,
+            commitAuthorAvatar: unprocessedCommits[index]!.commitAuthorAvatar,
+            commitDate: unprocessedCommits[index]!.commitDate,
+            summary,
+        })),
     });
-    await pollCommits(projectId);
-    return commits;
 };
 
 const summarizeCommits = async (githubUrl:string, commitHash: string) => {
-    const { data } = await axios.get(`${githubUrl}/commits/${commitHash}.diff`,{
+    const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`,{
         headers: {
             "Accept": "application/vnd.github.v3.fiff",
         },
     });
+    
     return await aiSummarize(data) || "No summary available";
 }
+
 
 async function fetchProjectGithubUrl(projectId: string) {
     const project = await db.project.findUnique({
@@ -114,5 +114,5 @@ async function filterUnProcessedCommits(projectId: string, commitHashes: Respons
 }
 
 
-await pollCommits("cm6wc7o0r000011h7hiv7dipj").then(console.log);
-console.log("done");
+// await pollCommits("cm6wc7o0r000011h7hiv7dipj").then(console.log);
+// console.log("done");

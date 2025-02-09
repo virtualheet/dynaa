@@ -4,6 +4,7 @@ import useProject from '@/hooks/use-projects'
 import { Github } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
+import CommitLog from './commit-log'
 
 const Page = () => {
   const { project } = useProject()
@@ -27,7 +28,6 @@ const Page = () => {
         >
          
           
-          {project?.id}
             <Link 
               href={project?.githubUrl || ''} 
               target="_blank"
@@ -60,18 +60,11 @@ const Page = () => {
           >
             Analyze Repository
           </button>
-          <Link 
-            href="/create" 
-            style={{
-              padding: 'clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem)',
-              fontSize: 'clamp(0.875rem, 1.25vw, 1rem)'
-            }}
-            className='bg-white/10 text-white rounded-2xl hover:bg-white/20 transition-colors font-medium border border-white/5'
-          >
-            Add New Project
-          </Link>
+          
         </div>
       </div>
+
+      <CommitLog />
 
 
             <div className="flex">
