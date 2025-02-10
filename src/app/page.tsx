@@ -1,6 +1,5 @@
 'use client'
 import Link from "next/link";
-import { LatestPost } from "@/app/_components/post";
 import { useUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
