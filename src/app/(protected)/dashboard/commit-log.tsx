@@ -4,13 +4,13 @@ import { api } from '@/trpc/react'
 import useProject from '@/hooks/use-projects'
 import { formatDistanceToNow } from 'date-fns'
 import { GitCommit } from 'lucide-react'
+import Loader from '@/components/ui/loading'
 
 const CommitLog = () => {
   const { project } = useProject()
   const { data: commits, isLoading } = api.project.getCommits.useQuery({
     projectId: project?.id || ''
   }, {
-
     enabled: !!project?.id
   })
 
@@ -28,12 +28,8 @@ const CommitLog = () => {
       </div>
 
       {isLoading ? (
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="h-16 bg-white/5 rounded-2xl" />
-            </div>
-          ))}
+        <div className="flex justify-center items-center py-20">
+          <Loader />
         </div>
       ) : commits?.length === 0 ? (
         <div className="text-center py-12 text-white/50">

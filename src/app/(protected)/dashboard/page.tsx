@@ -67,14 +67,7 @@ const Page = () => {
       <CommitLog />
 
 
-            <div className="flex">
-              <div>
-                Ask me question card
-              </div>
-              <div>
-                meeteing card
-              </div>
-            </div>
+          
 
             {/* git commit logs */}
             <div className='flex flex-col bg-black rounded-3xl border border-white/5'>

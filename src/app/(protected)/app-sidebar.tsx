@@ -104,22 +104,25 @@ const AppSidebar = () => {
             </h2>
             <div className="space-y-1">
               {projects?.map((project) => (
+                <Link
+                key={project.id}
+                href={'/dashboard'}>
                 <button
-                  key={project.id}
                   onClick={() => setProjectId(project.id)}
                   className={cn(
-                    "flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors",
+                    "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors",
                     project.id === projectId && "bg-white/10 text-white"
                   )}
                 >
                   <div className={cn(
-                    "flex items-center justify-center w-6 h-6 rounded-md border border-white/10 bg-white/5 text-white",
+                    "flex items-center justify-center w-6 h-6 rounded-lg   border border-white/10  text-white",
                     project.id === projectId && "bg-white/20"
                   )}>
                     {project.name[0]}
                   </div>
                   {!isCollapsed && <span>{project.name}</span>}
                 </button>
+                </Link>
               ))}
 
               <Link
