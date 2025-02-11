@@ -28,7 +28,7 @@ export default function Home() {
           we provide a summary of your project using AI{"/"}LLM{"'s."}
         </div>
         <Link href="/dashboard" className="bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2">
-          Get started
+          Get started {user && user.firstName ? `, ${user.firstName}` : ""}
         </Link>
       </motion.div>
     </AuroraBackground>

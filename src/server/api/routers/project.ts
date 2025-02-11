@@ -1,6 +1,7 @@
 import { pollCommits } from "@/lib/github";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import { indexGithubRepo } from "@/lib/github-loader";
 
 export const projectRouter = createTRPCRouter({
     createProject: protectedProcedure
@@ -17,10 +18,11 @@ export const projectRouter = createTRPCRouter({
                     id: ctx.user.userId!
                 }
             })
+            console.log('userr : ', user)
             if (!user) {
                 throw new Error("User not found");
             }
-            console.log('user : ', user)
+            console.log('userr : ', user)
             const project = await ctx.db.project.create({
                 data: {
                     name: input.name,
@@ -33,6 +35,7 @@ export const projectRouter = createTRPCRouter({
                 }
             });
             await pollCommits(project.id);
+            await indexGithubRepo(project.id, input.githubUrl, input.githubToken);
             return project;
         }),
     getProjects: protectedProcedure.query(async ({ ctx }) => {
@@ -58,7 +61,17 @@ export const projectRouter = createTRPCRouter({
             where: { projectId: input.projectId }
         });
     }),
-
+    syncUser: protectedProcedure
+        .mutation(async ({ ctx }) => {
+            const user = await ctx.db.user.upsert({
+                where: { id: ctx.user.userId! },
+                create: { 
+                    id: ctx.user.userId!,
+                },
+                update: {}
+            });
+            return user;
+        }),
 });
 
 
