@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="dark">
-        <body className="min-h-screen overflow-x-hidden bg-black/80">
+        <body className="min-h-screen poppins overflow-x-hidden bg-black/80">
           <TRPCReactProvider>
             {children}
           </TRPCReactProvider>
