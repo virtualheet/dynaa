@@ -52,10 +52,12 @@ const AppSidebar = () => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             {!isCollapsed && (
-              <h1 className="text-xl font-bold text-white">Dyna</h1>
+              <Link href='/'>
+                <h1 className="text-xl font-bold text-white">Dyna</h1>
+              </Link>
             )}
           </div>
-          <button 
+          <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="text-white/70 hover:text-white transition-colors"
           >
@@ -104,23 +106,23 @@ const AppSidebar = () => {
             <div className="space-y-1">
               {projects?.map((project) => (
                 <Link
-                key={project.id}
-                href={'/dashboard'}>
-                <button
-                  onClick={() => setProjectId(project.id)}
-                  className={cn(
-                    "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors",
-                    project.id === projectId && "bg-white/10 text-white"
-                  )}
-                >
-                  <div className={cn(
-                    "flex items-center justify-center w-6 h-6 rounded-lg   border border-white/10  text-white",
-                    project.id === projectId && "bg-white/20"
-                  )}>
-                    {project.name[0]}
-                  </div>
-                  {!isCollapsed && <span>{project.name}</span>}
-                </button>
+                  key={project.id}
+                  href={'/dashboard'}>
+                  <button
+                    onClick={() => setProjectId(project.id)}
+                    className={cn(
+                      "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors",
+                      project.id === projectId && "bg-white/10 text-white"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex items-center justify-center w-6 h-6 rounded-lg   border border-white/10  text-white",
+                      project.id === projectId && "bg-white/20"
+                    )}>
+                      {project.name[0]}
+                    </div>
+                    {!isCollapsed && <span>{project.name}</span>}
+                  </button>
                 </Link>
               ))}
 

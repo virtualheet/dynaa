@@ -46,18 +46,17 @@ const CreateProject = () => {
           </div>
           <h1 className='text-2xl font-bold'>Link Repository</h1>
         </div>
-        
+
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-       
+
 
           <div className='space-y-2'>
             <label className='text-sm font-medium text-white/70'>
               GitHub Repository
             </label>
-            <ImportRepo 
+            <ImportRepo
               onSelectRepo={(url) => setValue('repoUrl', url)}
               onProjectName={(name) => setValue('projectName', name)}
-              githubToken={watch('githubToken')}
             />
             <input
 
@@ -79,10 +78,10 @@ const CreateProject = () => {
             />
           </div>
 
-          <button 
+          <button
             type='submit'
             style={{
-              padding:"clamp(0.5rem, 0.75vw, 1rem) clamp(1rem, 1vw, 2rem)"
+              padding: "clamp(0.5rem, 0.75vw, 1rem) clamp(1rem, 1vw, 2rem)"
             }}
             disabled={createProject.isPending}
             className='w-fit bg-white/10 text-white border border-white/10 rounded-2xl py-3 font-medium hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-8'

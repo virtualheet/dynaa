@@ -5,7 +5,7 @@ import { db } from "@/server/db";
 
 
 export const loadGithubRepo = async (githubUrl: string, githubToken?: string) => {
-    const loader = new GithubRepoLoader(githubUrl,{
+    const loader = new GithubRepoLoader(githubUrl, {
         accessToken: githubToken || '',
         branch: 'main',
         ignoreFiles: [
@@ -22,7 +22,7 @@ export const loadGithubRepo = async (githubUrl: string, githubToken?: string) =>
             "Gemfile",
         ],
         recursive: true,
-        unknown: "warn", 
+        unknown: "warn",
         maxConcurrency: 5,
     });
 
@@ -32,12 +32,12 @@ export const loadGithubRepo = async (githubUrl: string, githubToken?: string) =>
 
 }
 
-export const indexGithubRepo = async (projectId: string,githubUrl: string, githubToken?: string) => {
+export const indexGithubRepo = async (projectId: string, githubUrl: string, githubToken?: string) => {
     const docs = await loadGithubRepo(githubUrl, githubToken);
     const allEmbeddings = await generateEmbeddings(docs);
-    await Promise.allSettled(allEmbeddings.map(async (embedding,index)=> {
+    await Promise.allSettled(allEmbeddings.map(async (embedding, index) => {
         console.log(`Processing ${index} of ${allEmbeddings.length}`);
-        if(!embedding) return
+        if (!embedding) return
 
         const sourceCodeEmbedding = await db.sourceCodeEmbedding.create({
             data: {
@@ -47,7 +47,10 @@ export const indexGithubRepo = async (projectId: string,githubUrl: string, githu
                 projectId,
             }
         })
-        await db.$executeRaw`UPDATE "SourceCodeEmbedding" SET "summaryEmbedding" = ${embedding.embedding}::vector WHERE id = ${sourceCodeEmbedding.id}`
+        await db.$executeRaw`
+                UPDATE "SourceCodeEmbedding" 
+                SET "summaryEmbedding" = ${embedding.embedding}::vector 
+                WHERE id = ${sourceCodeEmbedding.id}`
     }))
 }
 

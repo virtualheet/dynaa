@@ -1,5 +1,6 @@
 import { createTRPCRouter, createCallerFactory } from "@/server/api/trpc";
 import { projectRouter } from "./routers/project";
+import { githubRouter } from "./routers/githubRouter";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { projectRouter } from "./routers/project";
  */
 export const appRouter = createTRPCRouter({
   project: projectRouter,
+  github : githubRouter
 });
 
 
