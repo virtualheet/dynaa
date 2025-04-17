@@ -21,9 +21,6 @@ const CommitLog = () => {
   return (
     <div className="mt-6 bg-black border border-white/5 rounded-3xl p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-white/5 rounded-xl">
-          <GitCommit className="w-5 h-5" />
-        </div>
         <h2 className="text-xl font-semibold">Recent Commits</h2>
       </div>
 
@@ -32,7 +29,7 @@ const CommitLog = () => {
           <Loader />
         </div>
       ) : commits?.length === 0 ? (
-        <div className="text-center py-12 text-white/50">
+        <div className="text-center py-6 text-white/50">
           No commits found
         </div>
       ) : (

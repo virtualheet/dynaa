@@ -3,11 +3,15 @@
 import useProject from '@/hooks/use-projects'
 import { Github } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect } from 'react'
 import CommitLog from './commit-log'
-
+import AskQuestionCard from './ask-question-card'
 const Page = () => {
   const { project } = useProject()
+  useEffect(() => {
+    console.log(project?.id);
+}, [project?.id]); 
+  
   
   return (
     <div className='w-full flex flex-col bg-black/80 text-white min-h-screen rounded-3xl'
@@ -62,6 +66,11 @@ const Page = () => {
           </button>
           
         </div>
+      </div>
+
+
+      <div className="flex w-full">
+        <AskQuestionCard />
       </div>
 
       <CommitLog />

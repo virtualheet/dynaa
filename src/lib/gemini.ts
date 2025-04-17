@@ -59,8 +59,7 @@ export const summarizeCode = async (doc: Document) => {
         ]);
         return response.response.text();
     } catch (error) {
-        return '';
-
+        return 'error in summarize code';
     }
 
 }
